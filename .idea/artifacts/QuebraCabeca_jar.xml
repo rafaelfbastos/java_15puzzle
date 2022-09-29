@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="QuebraCabeca:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/QuebraCabeca_jar</output-path>
+    <root id="archive" name="QuebraCabeca_jar.jar">
+      <element id="module-output" name="QuebraCabeca" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/sqlite-jdbc/3.39.3.0/sqlite-jdbc-3.39.3.0.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+    </root>
+  </artifact>
+</component>
