@@ -30,11 +30,14 @@ public class PontuacaoDAO {
                 String nome = reultado.getString("nome");
                 int jogadas = reultado.getInt("jogadas");
                 String dataString = reultado.getString("data");
+                long tempoLong = reultado.getLong("tempo");
+                String board = reultado.getString("board");
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
                 LocalDate data = LocalDate.parse(dataString,formatter);
-                pontuacoes.add(new Pontuacao(id, nome, jogadas, data));
+                TempoJogo tempo = new TempoJogo();
+                tempo.setTempo(tempoLong);
+                pontuacoes.add(new Pontuacao(id, nome, jogadas, data,board,tempo));
             }
 
         } catch (SQLException e) {
@@ -48,7 +51,7 @@ public class PontuacaoDAO {
 
         try(Connection conn = ConnectionFactory.getConnection()){
 
-            String sql = "INSERT INTO pontuacoes(nome, jogadas, data) VALUES(?, ?, ?)";
+            String sql = "INSERT INTO pontuacoes(nome, jogadas, data, tempo, board) VALUES(?, ?, ?, ?, ?)";
 
             PreparedStatement stm = conn.prepareStatement(sql);
             stm.setString(1,pontuaco.getNome());
@@ -57,6 +60,8 @@ public class PontuacaoDAO {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String data = formatter.format(pontuaco.getData());
             stm.setString(3,data);
+            stm.setLong(4,pontuaco.getTempo().getTempo());
+            stm.setString(5,pontuaco.getBoard());
 
             int rowsAffected = stm.executeUpdate();
 
@@ -67,8 +72,5 @@ public class PontuacaoDAO {
         }
 
     }
-
-
-
 
 }

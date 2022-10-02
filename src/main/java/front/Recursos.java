@@ -1,5 +1,7 @@
 package front;
 
+import models.TempoJogo;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -7,9 +9,7 @@ import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Recursos {
 
@@ -19,7 +19,6 @@ public class Recursos {
     private Font fontjogadas;
     private int jogadas;
     private String nome;
-    private Map<Integer, int[]> mapaCordenadas;
     private String estado;
     private BufferedImage sprite;
     private AudioInputStream silence;
@@ -31,8 +30,11 @@ public class Recursos {
     private Random rdm;
     private BufferedImage inicio;
     private BufferedImage fim;
-
-
+    private BufferedImage sprite2;
+    public String modo;
+    public int boardIndice;
+    private TempoJogo tempo;
+    private Map<Integer,String> boardName;
 
 
     Recursos() {
@@ -40,25 +42,35 @@ public class Recursos {
         setFontNome(new Font("Arial narrow", Font.CENTER_BASELINE, 40));
         setFontjogadas(new Font("Arial narrow", Font.CENTER_BASELINE, 30));
         setJogadas(0);
-        setMapaCordenadas(new HashMap<>());
         setEstado("S");
-        int k = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                getMapaCordenadas().put(k, new int[]{i, j});
-                k++;
-            }
-        }
+        setRdm(new Random());
+
         try {
             setSprite(ImageIO.read(getClass().getResource("/sprite.png")));
             setInicio(ImageIO.read(getClass().getResource("/inicio.png")));
             setFim(ImageIO.read(getClass().getResource("/fim.png")));
+            rdmSprite2();
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         carregarSons();
-        setRdm(new Random());
+
+        tempo = new TempoJogo();
+
+        boardName = new HashMap<>();
+        boardName.put(0,"Lula");
+        boardName.put(1,"Darth Vader helmet");
+        boardName.put(2,"Darth Vader");
+        boardName.put(3,"MK logo");
+        boardName.put(4,"Lion");
+        boardName.put(5,"Yoda");
+        boardName.put(6,"Sub-Zero");
+        boardName.put(7,"Pikachu");
+        boardName.put(8,"MK Pokemon");
+
+
     }
 
     public static Recursos getInstance() {
@@ -73,12 +85,66 @@ public class Recursos {
         return getSprite().getSubimage(x, 0, 150, 150);
     }
 
-    public void carregarSons(){
+    public BufferedImage getImagem2(int numero) {
+        switch (numero) {
+            case 1:
+                return sprite2.getSubimage(0, 0, 150, 150);
+            case 2:
+                return sprite2.getSubimage(150, 0, 150, 150);
 
-        try{
+            case 3:
+                return sprite2.getSubimage(300, 0, 150, 150);
+
+            case 4:
+                return sprite2.getSubimage(450, 0, 150, 150);
+
+            case 5:
+                return sprite2.getSubimage(0, 150, 150, 150);
+
+            case 6:
+                return sprite2.getSubimage(150, 150, 150, 150);
+
+            case 7:
+                return sprite2.getSubimage(300, 150, 150, 150);
+
+            case 8:
+                return sprite2.getSubimage(450, 150, 150, 150);
+
+            case 9:
+                return sprite2.getSubimage(0, 300, 150, 150);
+
+            case 10:
+                return sprite2.getSubimage(150, 300, 150, 150);
+
+            case 11:
+                return sprite2.getSubimage(300, 300, 150, 150);
+
+            case 12:
+                return sprite2.getSubimage(450, 300, 150, 150);
+
+            case 13:
+                return sprite2.getSubimage(0, 450, 150, 150);
+
+            case 14:
+                return sprite2.getSubimage(150, 450, 150, 150);
+
+            case 15:
+                return sprite2.getSubimage(300, 450, 150, 150);
+
+            default:
+                return sprite2.getSubimage(450, 450, 150, 150);
+
+        }
+
+
+    }
+
+    public void carregarSons() {
+
+        try {
             setWin(AudioSystem.getAudioInputStream(getClass().getResource("/win.wav")));
             setSilence(AudioSystem.getAudioInputStream(getClass().getResource("/silence.wav")));
-           setTransition(AudioSystem.getAudioInputStream(getClass().getResource("/transition.wav")));
+            setTransition(AudioSystem.getAudioInputStream(getClass().getResource("/transition.wav")));
 
             setClipWin(AudioSystem.getClip());
             setClipSilence(AudioSystem.getClip());
@@ -90,24 +156,28 @@ public class Recursos {
 
             getClipSilence().start();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    public void tocarTransition(){
+
+    public void tocarTransition() {
         getClipTransition().setFramePosition(0);
         getClipTransition().start();
     }
-    public void tocarWin(){
+
+    public void tocarWin() {
         getClipWin().setFramePosition(0);
         getClipWin().start();
     }
-    void incrementarJogadas(){
+
+    void incrementarJogadas() {
         setJogadas(getJogadas() + 1);
         tocarTransition();
     }
-    public int gerarRandom(int numero){
+
+    public int gerarRandom(int numero) {
         return getRdm().nextInt(numero);
     }
 
@@ -149,14 +219,6 @@ public class Recursos {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public Map<Integer, int[]> getMapaCordenadas() {
-        return mapaCordenadas;
-    }
-
-    public void setMapaCordenadas(Map<Integer, int[]> mapaCordenadas) {
-        this.mapaCordenadas = mapaCordenadas;
     }
 
     public String getEstado() {
@@ -245,5 +307,33 @@ public class Recursos {
 
     public void setFim(BufferedImage fim) {
         this.fim = fim;
+    }
+
+    public BufferedImage getSprite2() {
+        return sprite2;
+    }
+    public void rdmSprite2() {
+        ArrayList<String> urls = new ArrayList<>(Arrays.asList("/1.png","/2.png","/3.png","/4.png","/5.png","/6.png","/7.png","/8.png","/9.png"));
+        boardIndice = rdm.nextInt(urls.size());
+        try {
+            sprite2 = (ImageIO.read(getClass().getResource(urls.get(boardIndice))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TempoJogo getTempo() {
+        return tempo;
+    }
+    public void setTempo(TempoJogo tempo) {
+        this.tempo = tempo;
+    }
+
+    public int getBoardIndice() {
+        return boardIndice;
+    }
+
+    public String getBoardName() {
+        return (modo=="1")?"15 Puzzle":boardName.get(boardIndice);
     }
 }

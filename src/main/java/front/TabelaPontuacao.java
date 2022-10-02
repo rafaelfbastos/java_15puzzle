@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class TabelaPontuacao extends AbstractTableModel {
 
-    private final String[] header = {"Posição","Nome", "Jogadas", "Data"};
+    private final String[] header = {"Rank","Nome", "Jogadas", "Data","Tempo","Board"};
     private final ArrayList<Pontuacao> TabelaList;
 
     public TabelaPontuacao(ArrayList<Pontuacao> pontuacoes) {
@@ -39,6 +39,10 @@ public class TabelaPontuacao extends AbstractTableModel {
                 return TabelaList.get(rowIndex).getJogadas();
             case 3:
                 return TabelaList.get(rowIndex).getData().toString();
+            case 4:
+                return TabelaList.get(rowIndex).getTempo().toString();
+            case 5:
+                return TabelaList.get(rowIndex).getBoard();
             default:
                 return null;
         }

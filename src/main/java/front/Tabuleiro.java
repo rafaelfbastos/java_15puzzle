@@ -75,7 +75,6 @@ public class Tabuleiro {
             if (tabuleiro.get(pecaSecionada - 1).getLabel() == 0) {
                 Collections.swap(tabuleiro, pecaSecionada, pecaSecionada - 1);
                 Recursos.getInstance().incrementarJogadas();
-
             }
 
         }

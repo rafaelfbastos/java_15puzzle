@@ -7,10 +7,10 @@ import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
 
-
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 
 public class Game extends JPanel {
 
@@ -74,16 +74,26 @@ public class Game extends JPanel {
             Recursos.getInstance().tocarWin();
             Recursos.getInstance().setEstado("F");
             LocalDate data = LocalDate.now();
+            Recursos.getInstance().getTempo().setTempofinal(System.currentTimeMillis());
+            Recursos.getInstance().getTempo().calcularTempo();
             tabuleiro.shuflleTabuleiro();
+
             PontuacaoDAO.inserir(
-                    new Pontuacao(Recursos.getInstance().getNome(), Recursos.getInstance().getJogadas(), data));
+                    new Pontuacao(Recursos.getInstance().getNome(), Recursos.getInstance().getJogadas(),
+                            data, Recursos.getInstance().getBoardName(), Recursos.getInstance().getTempo()));
         }
 
     }
-
     private void render() {
         repaint();
         Main.janela.render();
+    }
+
+    public void embaralhar() {
+        try {
+            tabuleiro.shuflleTabuleiro();
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -116,91 +126,61 @@ public class Game extends JPanel {
             g2d.fillRect(0, 456, 610, 2);
             g2d.fillRect(0, 608, 610, 2);
 
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(0).getLabel()), 2, 2, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(1).getLabel()), 154, 2, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(2).getLabel()), 306, 2, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(3).getLabel()), 458, 2, null);
-            // ----------------------------------------------------------------------------------------------------------------------
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(4).getLabel()), 2, 154, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(5).getLabel()), 154, 154, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(6).getLabel()), 306, 154, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(7).getLabel()), 458, 154, null);
-            // ----------------------------------------------------------------------------------------------------------------------
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(8).getLabel()), 2, 306, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(9).getLabel()), 154, 306, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(10).getLabel()), 306, 306,
-                    null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(11).getLabel()), 458, 306,
-                    null);
-            // ----------------------------------------------------------------------------------------------------------------------
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(12).getLabel()), 2, 458, null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(13).getLabel()), 154, 458,
-                    null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(14).getLabel()), 306, 458,
-                    null);
-            g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(15).getLabel()), 458, 458,
-                    null);
-
-            /*
-             * Desenhar peças com texto
-             * 
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(0).labelSting(),50,90);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(1).labelSting(),200,90);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(2).labelSting(),350,90);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(3).labelSting(),500,90);
-             * //---------------------------------------------------------------------------
-             * ---
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(4).labelSting(),50,240);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(5).labelSting(),200,240);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(6).labelSting(),350,240);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(7).labelSting(),500,240);
-             * //---------------------------------------------------------------------------
-             * ---
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(8).labelSting(),50,390);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(9).labelSting(),200,390);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(10).labelSting(),350,390);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(11).labelSting(),500,390);
-             * //---------------------------------------------------------------------------
-             * ---
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(12).labelSting(),50,540);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(13).labelSting(),200,540);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(14).labelSting(),350,540);
-             * g2d.setFont(Recursos.getInstance().fontMenu);
-             * g2d.setColor(Color.red);
-             * g2d.drawString(""+tabuleiro.getTabuleiro().get(15).labelSting(),500,540);
-             */
+            if (Recursos.getInstance().modo == "2") {
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(0).getLabel()), 2, 2, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(1).getLabel()), 154, 2, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(2).getLabel()), 306, 2, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(3).getLabel()), 458, 2, null);
+                // ----------------------------------------------------------------------------------------------------------------------
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(4).getLabel()), 2, 154, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(5).getLabel()), 154, 154, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(6).getLabel()), 306, 154, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(7).getLabel()), 458, 154, null);
+                // ----------------------------------------------------------------------------------------------------------------------
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(8).getLabel()), 2, 306, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(9).getLabel()), 154, 306, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(10).getLabel()), 306, 306,
+                        null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(11).getLabel()), 458, 306,
+                        null);
+                // ----------------------------------------------------------------------------------------------------------------------
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(12).getLabel()), 2, 458, null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(13).getLabel()), 154, 458,
+                        null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(14).getLabel()), 306, 458,
+                        null);
+                g2d.drawImage(Recursos.getInstance().getImagem2(tabuleiro.getTabuleiro().get(15).getLabel()), 458, 458,
+                        null);
+            }
+            if (Recursos.getInstance().modo == "1") {
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(0).getLabel()), 2, 2, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(1).getLabel()), 154, 2, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(2).getLabel()), 306, 2, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(3).getLabel()), 458, 2, null);
+                // ----------------------------------------------------------------------------------------------------------------------
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(4).getLabel()), 2, 154, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(5).getLabel()), 154, 154, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(6).getLabel()), 306, 154, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(7).getLabel()), 458, 154, null);
+                // ----------------------------------------------------------------------------------------------------------------------
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(8).getLabel()), 2, 306, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(9).getLabel()), 154, 306, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(10).getLabel()), 306, 306,
+                        null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(11).getLabel()), 458, 306,
+                        null);
+                // ----------------------------------------------------------------------------------------------------------------------
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(12).getLabel()), 2, 458, null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(13).getLabel()), 154, 458,
+                        null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(14).getLabel()), 306, 458,
+                        null);
+                g2d.drawImage(Recursos.getInstance().getImagem(tabuleiro.getTabuleiro().get(15).getLabel()), 458, 458,
+                        null);
+            }
 
         }
+
 
     }
 }

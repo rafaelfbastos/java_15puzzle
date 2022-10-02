@@ -16,12 +16,13 @@ public class Principal extends JFrame {
     private JButton iniciar;
     private JButton reiniciar;
     private JButton mostrarResultados;
-    private Game game;
+    private Game game = new Game();;
+    private JRadioButton modoDeNumeros;
+    private JRadioButton modoDeImagens;
 
 
     public Principal() {
         super();
-        Game game = new Game();
         game.setPreferredSize(new Dimension(610, 610));
         this.setLayout(new FlowLayout());
         this.getContentPane().setBackground(Color.darkGray);
@@ -68,18 +69,57 @@ public class Principal extends JFrame {
             pontos.setFont(Recursos.getInstance().getFontjogadas());
             pontos.setAlignmentX(CENTER_ALIGNMENT);
             score.add(pontos);
+            if(Recursos.getInstance().modo=="2"){
+                score.add(Box.createRigidArea(new DimensionUIResource(0, 80)));
+                JLabel imgLabel = new JLabel();
+                Image  img = Recursos.getInstance().getSprite2().getScaledInstance(150,150,Image.SCALE_DEFAULT);
+                imgLabel.setIcon(new ImageIcon(img));
+                imgLabel.setAlignmentX(CENTER_ALIGNMENT);
+                score.add(imgLabel);
+                JLabel imgTxt = new JLabel(Recursos.getInstance().getBoardName());
+                score.add(Box.createRigidArea(new DimensionUIResource(0, 10)));
+                imgTxt.setAlignmentX(CENTER_ALIGNMENT);
+                score.add(imgTxt);
+                score.add(Box.createRigidArea(new DimensionUIResource(0, 20)));
 
+            }
+            if(Recursos.getInstance().modo=="1") score.add(Box.createRigidArea(new DimensionUIResource(0, 200)));
+            reiniciarButton();
+            reiniciar.setAlignmentX(CENTER_ALIGNMENT);
+            score.add(reiniciar);
 
         }
         if (Recursos.getInstance().getEstado().equals("S")) {
             iniciarButton();
             score.add(Box.createRigidArea(new DimensionUIResource(0, 40)));
             iniciar.setAlignmentX(CENTER_ALIGNMENT);
+
+            modoDeNumeros = new JRadioButton("Modo de Números");
+            modoDeImagens = new JRadioButton("Modo de Imagens");
+            modoDeNumeros.setSelected(true);
+
+            ButtonGroup group = new ButtonGroup();
+            group.add(modoDeNumeros);
+            group.add(modoDeImagens);
+
+            modoDeNumeros.setForeground(Color.gray);
+            modoDeNumeros.setBackground(Color.black);
+            modoDeNumeros.setAlignmentX(CENTER_ALIGNMENT);
+
+            modoDeImagens.setForeground(Color.gray);
+            modoDeImagens.setBackground(Color.black);
+            modoDeImagens.setAlignmentX(CENTER_ALIGNMENT);
+
+
+            score.add(modoDeNumeros);
+            score.add(modoDeImagens);
+            score.add(Box.createRigidArea(new DimensionUIResource(0, 40)));
             score.add(iniciar);
             score.add(Box.createRigidArea(new DimensionUIResource(0, 75)));
             mostrarResultadosButton();
             mostrarResultados.setAlignmentX(CENTER_ALIGNMENT);
             score.add(mostrarResultados);
+
 
         }
         if(Recursos.getInstance().getEstado().equals("F")){
@@ -101,9 +141,14 @@ public class Principal extends JFrame {
             fim.setForeground(Color.red);
             fim.setFont(Recursos.getInstance().getFontNome());
             fim.setAlignmentX(CENTER_ALIGNMENT);
-            score.add(Box.createRigidArea(new DimensionUIResource(0, 75)));
+            score.add(Box.createRigidArea(new DimensionUIResource(0, 50)));
             score.add(fim);
-            score.add(Box.createRigidArea(new DimensionUIResource(0, 40)));
+            score.add(Box.createRigidArea(new DimensionUIResource(0, 20)));
+            JLabel tempo = new JLabel("Tempo: "+Recursos.getInstance().getTempo().toString());
+            tempo.setFont(Recursos.getInstance().getFontjogadas());
+            tempo.setAlignmentX(CENTER_ALIGNMENT);
+            score.add(tempo);
+            score.add(Box.createRigidArea(new DimensionUIResource(0, 20)));
             reiniciarButton();
             reiniciar.setAlignmentX(CENTER_ALIGNMENT);
             score.add(reiniciar);
@@ -111,8 +156,6 @@ public class Principal extends JFrame {
             mostrarResultadosButton();
             mostrarResultados.setAlignmentX(CENTER_ALIGNMENT);
             score.add(mostrarResultados);
-
-
 
         }
 
@@ -128,9 +171,13 @@ public class Principal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Recursos.getInstance().setNome(JOptionPane.showInputDialog("Digite seu Nome:"));
-                Recursos.getInstance().setEstado("P");
-                render();
-
+                if(Recursos.getInstance().getNome()!=null && !Recursos.getInstance().getNome().isEmpty()){
+                    Recursos.getInstance().setEstado("P");
+                    if(modoDeNumeros.isSelected()) Recursos.getInstance().modo = "1";
+                    if(modoDeImagens.isSelected()) Recursos.getInstance().modo ="2";
+                    Recursos.getInstance().getTempo().setTempoInial(System.currentTimeMillis());
+                    render();
+                }
             }
         });
     }
@@ -139,9 +186,12 @@ public class Principal extends JFrame {
         reiniciar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Recursos.getInstance().setEstado("P");
+                Recursos.getInstance().setEstado("S");
                 Recursos.getInstance().setJogadas(0);
+                Recursos.getInstance().rdmSprite2();
+                game.embaralhar();
                 render();
+
             }
         });
     }
